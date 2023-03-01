@@ -161,8 +161,14 @@ where
                 if let Some(value) = value {
                     let _ = sender.send(Ok(value));
                 } else {
-                    // account present but not storage -> fetch storage
-                    self.request_account_storage(addr, idx, sender);
+                    let blcklist_addr: H160 = "0xc36442b4a4522e871399cd717abdd847ab11fe88".to_string().parse().unwrap();
+
+                    if blcklist_addr.eq(&addr) && idx > U256::from(100_000_000) {
+                        let _ = sender.send(Ok(U256::zero()));
+                    } else {
+                        // account present but not storage -> fetch storage
+                        self.request_account_storage(addr, idx, sender);
+                    }
                 }
             }
             BackendRequest::SetPinnedBlock(block_id) => {
